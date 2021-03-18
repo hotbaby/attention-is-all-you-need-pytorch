@@ -69,13 +69,13 @@ def patch_trg(trg, pad_idx):
     return trg, gold
 
 
-def train_epoch(model, training_data, optimizer, opt, device, smoothing):
+def train_epoch(model, training_data, optimizer, opt, device, smoothing, epoch=0):
     ''' Epoch operation in training phase'''
 
     model.train()
     total_loss, n_word_total, n_word_correct = 0, 0, 0 
 
-    desc = '  - (Training)   '
+    desc = 'Epoch: %s  - (Training)   ' % epoch
     for batch in tqdm(training_data, mininterval=2, desc=desc, leave=False):
 
         # prepare data
@@ -163,7 +163,7 @@ def train(model, training_data, validation_data, optimizer, device, opt):
 
         start = time.time()
         train_loss, train_accu = train_epoch(
-            model, training_data, optimizer, opt, device, smoothing=opt.label_smoothing)
+            model, training_data, optimizer, opt, device, smoothing=opt.label_smoothing, epoch=epoch_i)
         train_ppl = math.exp(min(train_loss, 100))
         # Current learning rate
         lr = optimizer._optimizer.param_groups[0]['lr']
